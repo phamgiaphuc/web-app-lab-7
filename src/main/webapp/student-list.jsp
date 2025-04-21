@@ -20,7 +20,7 @@
                 <td>${student.id}</td>
                 <td>${student.name}</td>
                 <td>${student.email}</td>
-                <td>${student.course}</td>
+                <td>${student.courseName}</td>
                 <td>
                     <a
                             href="${pageContext.request.contextPath}/student/view?id=${student.id}"

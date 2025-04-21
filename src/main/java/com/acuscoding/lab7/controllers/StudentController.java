@@ -1,6 +1,8 @@
 package com.acuscoding.lab7.controllers;
 
+import com.acuscoding.lab7.dao.CourseDAO;
 import com.acuscoding.lab7.dao.StudentDAO;
+import com.acuscoding.lab7.models.Course;
 import com.acuscoding.lab7.models.Student;
 
 import jakarta.servlet.ServletException;
@@ -11,49 +13,42 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "StudentController", urlPatterns = {"/students",
-        "/student/*"})
+@WebServlet(name = "StudentController", urlPatterns = {"/students", "/student/*"})
 public class StudentController extends HttpServlet {
 
     private StudentDAO studentDAO;
+    private CourseDAO courseDAO;
 
     @Override
     public void init() {
         studentDAO = new StudentDAO();
+        courseDAO = new CourseDAO();
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse
-            response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         String pathInfo = request.getPathInfo();
         String action = request.getParameter("action");
 
         if (pathInfo == null && action == null) {
-            // List all students
             listStudents(request, response);
         } else if (pathInfo != null && pathInfo.equals("/new")) {
-            // Show form to add a new student
             showNewForm(request, response);
         } else if (pathInfo != null && pathInfo.equals("/edit")) {
-            // Show form to edit an existing student
             showEditForm(request, response);
         } else if (pathInfo != null && pathInfo.equals("/delete")) {
-            // Delete a student
             deleteStudent(request, response);
         } else if (pathInfo != null && pathInfo.equals("/view")) {
-            // View a specific student
             viewStudent(request, response);
         } else {
-            // Default - show all students
             listStudents(request, response);
         }
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse
-            response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         String pathInfo = request.getPathInfo();
@@ -81,8 +76,7 @@ public class StudentController extends HttpServlet {
         }
     }
 
-    private void viewStudent(HttpServletRequest request, HttpServletResponse
-            response)
+    private void viewStudent(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         Student student = studentDAO.getStudentById(id);
@@ -90,59 +84,55 @@ public class StudentController extends HttpServlet {
         request.getRequestDispatcher("/student-view.jsp").forward(request, response);
     }
 
-    private void showNewForm(HttpServletRequest request, HttpServletResponse
-            response)
+    private void showNewForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        System.out.println("Hello World");
+        List<Course> courses = courseDAO.getAllCourses();
+        request.setAttribute("courses", courses);
         request.getRequestDispatcher("/student-form.jsp").forward(request, response);
     }
 
-    private void showEditForm(HttpServletRequest request, HttpServletResponse
-            response)
+    private void showEditForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         Student student = studentDAO.getStudentById(id);
+        System.out.println(student);
+        List<Course> courses = courseDAO.getAllCourses();
         request.setAttribute("student", student);
+        request.setAttribute("courses", courses);
         request.getRequestDispatcher("/student-form.jsp").forward(request, response);
     }
 
-    private void addStudent(HttpServletRequest request, HttpServletResponse
-            response)
+    private void addStudent(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         String name = request.getParameter("name");
         String email = request.getParameter("email");
-        String course = request.getParameter("course");
-
+        int courseId = Integer.parseInt(request.getParameter("courseId"));
         Student newStudent = new Student();
-
         newStudent.setName(name);
         newStudent.setEmail(email);
-        newStudent.setCourse(course);
-
+        newStudent.setCourseId(courseId);
         studentDAO.addStudent(newStudent);
         response.sendRedirect(request.getContextPath() + "/students");
     }
 
-    private void updateStudent(HttpServletRequest request,
-                               HttpServletResponse response)
+    private void updateStudent(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         String name = request.getParameter("name");
         String email = request.getParameter("email");
-        String course = request.getParameter("course");
+        int courseId = Integer.parseInt(request.getParameter("courseId")); // Changed to courseId
 
         Student student = new Student();
         student.setId(id);
         student.setName(name);
         student.setEmail(email);
-        student.setCourse(course);
+        student.setCourseId(courseId); // Set courseId (int)
 
         studentDAO.updateStudent(student);
         response.sendRedirect(request.getContextPath() + "/students");
     }
 
-    private void deleteStudent(HttpServletRequest request,
-                               HttpServletResponse response)
+    private void deleteStudent(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         studentDAO.deleteStudent(id);

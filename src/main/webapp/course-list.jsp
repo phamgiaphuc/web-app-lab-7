@@ -15,10 +15,10 @@
       <td>${course.name}</td>
       <td>${course.credits}</td>
       <td>
-        <a href="${pageContext.request.contextPath}/course/view?id=${course.id}">View</a>
-        <a href="${pageContext.request.contextPath}/course/edit?id=${course.id}">Edit</a>
-        <a href="${pageContext.request.contextPath}/course/delete?id=${course.id}"
-           onclick="return confirm('Are you sure?')">Delete</a>
+        <a href="${pageContext.request.contextPath}/course/view?id=${course.id}" class="btn">View</a>
+        <a href="${pageContext.request.contextPath}/course/edit?id=${course.id}" class="btn">Edit</a>
+        <a href="${pageContext.request.contextPath}/course/delete?id=${course.id}" class="btn"
+           onclick="return confirm('Are you sure you want to delete this course?')">Delete</a>
       </td>
     </tr>
   </c:forEach>

@@ -114,7 +114,7 @@
         </div>
 
         <div class="feature-box">
-            <h3>Manage Records</h3>
+            <h3>Manage Student Records</h3>
             <p>Edit and update existing student records or remove
                 outdated entries.</p>
             <a href="${pageContext.request.contextPath}/students"
@@ -122,8 +122,8 @@
         </div>
 
         <div class="feature-box">
-            <h3>Manage Records</h3>
-            <p>Edit and update existing student records or remove
+            <h3>Manage Course Records</h3>
+            <p>Edit and update existing course records or remove
                 outdated entries.</p>
             <a href="${pageContext.request.contextPath}/courses"
                class="btn">View All Courses</a>

@@ -111,9 +111,15 @@
     <h1>Student Management System</h1>
 </header>
 <div class="nav">
+    <a href="${pageContext.request.contextPath}/">
+        Home</a>
     <a href="${pageContext.request.contextPath}/students">All
         Students</a>
     <a href="${pageContext.request.contextPath}/student/new">Add
         Student</a>
+    <a href="${pageContext.request.contextPath}/courses">All
+        Courses</a>
+    <a href="${pageContext.request.contextPath}/course/new">Add
+        Course</a>
 </div>
 <div class="container">

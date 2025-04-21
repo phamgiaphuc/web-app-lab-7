@@ -13,7 +13,7 @@
             <strong>Email:</strong> ${student.email}
         </div>
         <div style="margin-bottom: 15px;">
-            <strong>Course:</strong> ${student.course}
+            <strong>Course:</strong> ${student.courseName}
         </div>
         <div style="margin-bottom: 15px;">
             <strong>Registration Date:</strong>

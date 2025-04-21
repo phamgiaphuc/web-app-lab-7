@@ -6,18 +6,19 @@ public class Student {
     private int id;
     private String name;
     private String email;
-    private String course;
+    private int courseId; // Changed from String course to int courseId
+    private String courseName; // Optional: for display purposes
     private LocalDateTime registrationDate;
 
     // Default constructor
     public Student() {}
 
     // Constructor with fields
-    public Student(int id, String name, String email, String course) {
+    public Student(int id, String name, String email, int courseId) {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.course = course;
+        this.courseId = courseId;
     }
 
     // Getters and Setters
@@ -45,12 +46,20 @@ public class Student {
         this.email = email;
     }
 
-    public String getCourse() {
-        return course;
+    public int getCourseId() {
+        return courseId;
     }
 
-    public void setCourse(String course) {
-        this.course = course;
+    public void setCourseId(int courseId) {
+        this.courseId = courseId;
+    }
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
     }
 
     public LocalDateTime getRegistrationDate() {
@@ -64,6 +73,6 @@ public class Student {
     @Override
     public String toString() {
         return "Student{" + "id=" + id + ", name='" + name + "', email='" +
-                email + "', course='" + course + "'}";
+                email + "', courseId=" + courseId + ", courseName='" + courseName + "'}";
     }
 }

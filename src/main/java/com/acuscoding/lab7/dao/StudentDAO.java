@@ -15,7 +15,8 @@ public class StudentDAO {
     // Get all students
     public List<Student> getAllStudents() {
         List<Student> students = new ArrayList<>();
-        String sql = "SELECT * FROM students";
+        String sql = "SELECT s.id, s.name, s.email, s.course_id, c.name AS course_name, s.registration_date " +
+                "FROM students s JOIN courses c ON s.course_id = c.id";
 
         try (Connection conn = DBUtil.getConnection();
              Statement stmt = conn.createStatement();
@@ -26,7 +27,8 @@ public class StudentDAO {
                 student.setId(rs.getInt("id"));
                 student.setName(rs.getString("name"));
                 student.setEmail(rs.getString("email"));
-                student.setCourse(rs.getString("course"));
+                student.setCourseId(rs.getInt("course_id"));
+                student.setCourseName(rs.getString("course_name"));
                 if (rs.getTimestamp("registration_date") != null) {
                     student.setRegistrationDate(rs.getTimestamp("registration_date").toLocalDateTime());
                 }
@@ -40,7 +42,8 @@ public class StudentDAO {
 
     // Get student by ID
     public Student getStudentById(int id) {
-        String sql = "SELECT * FROM students WHERE id = ?";
+        String sql = "SELECT s.id, s.name, s.email, s.course_id, c.name AS course_name, s.registration_date " +
+                "FROM students s JOIN courses c ON s.course_id = c.id WHERE s.id = ?";
         Student student = null;
 
         try (Connection conn = DBUtil.getConnection();
@@ -53,58 +56,53 @@ public class StudentDAO {
                     student.setId(rs.getInt("id"));
                     student.setName(rs.getString("name"));
                     student.setEmail(rs.getString("email"));
-                    student.setCourse(rs.getString("course"));
-                    // Convert SQL timestamp to LocalDateTime
+                    student.setCourseId(rs.getInt("course_id"));
+                    student.setCourseName(rs.getString("course_name"));
                     if (rs.getTimestamp("registration_date") != null) {
-
                         student.setRegistrationDate(rs.getTimestamp("registration_date").toLocalDateTime());
                     }
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Error retrieving student with ID " + id, e);
         }
-
         return student;
     }
 
     // Add a new student
     public boolean addStudent(Student student) {
-        String sql = "INSERT INTO students (name, email, course) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO students (name, email, course_id) VALUES (?, ?, ?)";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, student.getName());
             pstmt.setString(2, student.getEmail());
-            pstmt.setString(3, student.getCourse());
+            pstmt.setInt(3, student.getCourseId()); // Use course_id
 
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            throw new RuntimeException("Error adding student", e);
         }
     }
 
     // Update an existing student
     public boolean updateStudent(Student student) {
-        String sql = "UPDATE students SET name = ?, email = ?, course = ? WHERE id = ?";
+        String sql = "UPDATE students SET name = ?, email = ?, course_id = ? WHERE id = ?";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, student.getName());
             pstmt.setString(2, student.getEmail());
-            pstmt.setString(3, student.getCourse());
+            pstmt.setInt(3, student.getCourseId()); // Use course_id
             pstmt.setInt(4, student.getId());
 
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
-
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            throw new RuntimeException("Error updating student with ID " + student.getId(), e);
         }
     }
 
@@ -120,8 +118,7 @@ public class StudentDAO {
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            throw new RuntimeException("Error deleting student with ID " + id, e);
         }
     }
 }
